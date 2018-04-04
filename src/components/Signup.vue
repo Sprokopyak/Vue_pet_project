@@ -23,62 +23,46 @@
                 formData:{
                     name: '',
                     email:'',
-                    password:'',
-                    userRef: firebase.database().ref('user')
+                    password:''
                 }
             }
         },
         methods: {
             signUp(){
-                var vm = this;
+                var me = this;
                 firebase.auth().createUserWithEmailAndPassword(this.formData.email,this.formData.password)
-                    .then((user)=>{
-                    
-                        this.$router.replace('/hello')
+                .then(user=> {
+                    this.$router.replace('/hello')
+                })
+                .then(()=> {
+                    firebase.auth().onAuthStateChanged(function(user) {
+                        if(user) {
+                            user.updateProfile({
+                                displayName: me.formData.name,
+                                photoURL: `http://www.gravatar.com/avatar/`
+                            }).then(()=>{
+                                firebase.database().ref('users').child(user.uid).set({
+                                    name: user.displayName,
+                                    email: user.email,
+                                    uid : user.uid,
+                                    avatar: user.photoURL
+                                });
+                            })
+                            console.log("User is signed in.");
+                        } else {
+                            console.log("No user is signed in.");
+                        }
+                    });
 
-                        user.updateProfile({
-                            displayName: this.formData.name,
-                            photoURL: `http://www.gravatar.com/avatar/`
-                        })
-                    
-                    
-                        //  .then(function(user){
-                        //      var vm = this;
-                        //      console.log(user)
-                        //           return vm.formData.userRef.child(user.uid).set({
-                        //             name: user.displayName,
-                        //             avatar: user.photoURL
-                        //           }) 
-                        //  })
-                    })
-                     .then(function(){
-                         var user = firebase.auth().currentUser;
-                         var b = firebase.database().ref('user').child(user.uid).set({
-                                name: user.displayName,
-                                avatar: user.photoURL
-
-                         })
-                            console.log(user)
-                            console.log(b)
-                            return b
-                            // vm.formData.saveUserToUsersRef(user).then(function(){
-                            // })
-                        })
-                    .catch((e)=>{
-                        alert('oops'+e.message);
-                    })
-            },
-            saveUserToUsersRef(user){
-                var vm = this
-                return vm.formData.userRef.child(user.uid).set({
-                    name: user.displayName,
-                    avatar: user.photoURL
-                })   
+                })
+                .catch((e)=>{
+                    alert('oops'+e.message);
+                })
             },
         },
 
         created(){
-
+            
         }
 
     }

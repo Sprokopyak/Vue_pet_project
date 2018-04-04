@@ -58,8 +58,15 @@ export default {
   created(){
     this.setAuthUser();
     var user = firebase.auth().currentUser;
-    console.log(user)
-    // this.authUser=firebase.auth().currentUser;
+    // console.log(user.uid)
+    // if(user !== null){
+    //   var b = firebase.database().ref('users').child(user.uid).set({
+    //         name: user.displayName,
+    //         avatar: user.photoURL
+
+    //   })
+    // }
+
   }
 }
 </script>
