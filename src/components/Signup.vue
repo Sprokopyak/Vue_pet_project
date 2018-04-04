@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="container">
         <h2>Signup</h2>
 
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
@@ -14,66 +14,60 @@
 
     </div>
 </template>
+
 <script>
-
-    export default {
-        name: 'Signup',
-        data () {
-            return {
-                formData:{
-                    name: '',
-                    email:'',
-                    password:''
-                }
+export default {
+    data () {
+        return {
+            formData:{
+                name: '',
+                email:'',
+                password:''
             }
-        },
-        methods: {
-            signUp(){
-                var me = this;
-                firebase.auth().createUserWithEmailAndPassword(this.formData.email,this.formData.password)
-                .then(user=> {
-                    this.$router.replace('/hello')
-                })
-                .then(()=> {
-                    firebase.auth().onAuthStateChanged(function(user) {
-                        if(user) {
-                            user.updateProfile({
-                                displayName: me.formData.name,
-                                photoURL: `http://www.gravatar.com/avatar/`
-                            }).then(()=>{
-                                firebase.database().ref('users').child(user.uid).set({
-                                    name: user.displayName,
-                                    email: user.email,
-                                    uid : user.uid,
-                                    avatar: user.photoURL
-                                });
-                            })
-                            console.log("User is signed in.");
-                        } else {
-                            console.log("No user is signed in.");
-                        }
-                    });
-
-                })
-                .catch((e)=>{
-                    alert('oops'+e.message);
-                })
-            },
-        },
-
-        created(){
-            
         }
+    },
+    methods: {
+        signUp(){
+            var me = this;
+            firebase.auth().createUserWithEmailAndPassword(this.formData.email,this.formData.password)
+            .then(user=> {
+                this.$router.replace('/hello')
+            })
+            .then(()=> {
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if(user) {
+                        user.updateProfile({
+                            displayName: me.formData.name,
+                            photoURL: `http://www.gravatar.com/avatar/`
+                        }).then(()=>{
+                            firebase.database().ref('users').child(user.uid).set({
+                                name: user.displayName,
+                                email: user.email,
+                                uid : user.uid,
+                                avatar: user.photoURL
+                            });
+                        })
+                        console.log("User is signed in.");
+                    } else {
+                        console.log("No user is signed in.");
+                    }
+                });
 
+            })
+            .catch((e)=>{
+                alert('oops'+e.message);
+            })
+        },
+    },
+
+    created(){
+        
     }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    h1, h2 {
-        font-weight: normal;
-    }
-
     ul {
         list-style-type: none;
         padding: 0;
@@ -81,9 +75,5 @@
 
     li {
         margin: 0 10px;
-    }
-
-    a {
-        color: #42b983;
     }
 </style>

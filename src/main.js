@@ -1,18 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router/'
+import router from './router/router'
 import firebase from 'firebase'
 
 // Vue.config.productionTip = false
 
-let app;
 var config = {
-  apiKey: "AIzaSyD3Rjn9nI1eHT74x0czICNGdShAV8GVPIk",
-  authDomain: "my-project2-e2e7e.firebaseapp.com",
-  databaseURL: "https://my-project2-e2e7e.firebaseio.com",
-  projectId: "my-project2-e2e7e",
-  storageBucket: "my-project2-e2e7e.appspot.com",
-  messagingSenderId: "853779935094"
+    apiKey: "AIzaSyD3Rjn9nI1eHT74x0czICNGdShAV8GVPIk",
+    authDomain: "my-project2-e2e7e.firebaseapp.com",
+    databaseURL: "https://my-project2-e2e7e.firebaseio.com",
+    projectId: "my-project2-e2e7e",
+    storageBucket: "my-project2-e2e7e.appspot.com",
+    messagingSenderId: "853779935094"
 };
 
 firebase.initializeApp(config);
@@ -21,12 +20,9 @@ window.firebase=firebase;
 
 /* eslint-disable no-new */
 firebase.auth().onAuthStateChanged((user)=>{
-  // if(!app){
-  new Vue({
-      el: '#app',
-      router,
-      components: { App },
-      template: '<App/>'
+    new Vue({
+        el: '#app',
+        router,
+        render: h => h(App)
     });
-  // }
 });
