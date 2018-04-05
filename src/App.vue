@@ -34,7 +34,8 @@
 export default {
     data(){
         return {
-            authUser: null
+            authUser: null,
+            fireData:null
         }
     },
 
@@ -44,7 +45,14 @@ export default {
 
     methods:{
         setAuthUser(){
-            this.authUser = firebase.auth().currentUser;
+            this.authUser =firebase.auth().currentUser;
+            if(this.authUser){
+                var userId = firebase.auth().currentUser.uid;
+                return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+                var username = (snapshot.val() && snapshot.val().name) || 'Anonymous';
+                        console.log(snapshot.val())
+                });
+            }
         },
 
         logout(){
@@ -55,6 +63,11 @@ export default {
             .catch((e)=>{
                 alert(e.message)
             })
+        },
+        fetchFirebaseUserData(){
+            firebase.database().ref('/users/').on('value',(snapshot)=>{
+                console.log(snapshot.val())
+            });
         }
     },
 

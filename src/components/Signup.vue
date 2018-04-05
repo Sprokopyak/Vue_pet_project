@@ -9,6 +9,14 @@
             <br>
             <input type="password" v-model="formData.password" class="form-control" placeholder="password">
             <br>
+            <span>Зареєструватись як:</span>  
+             <label for="teacher"> 
+                        <input type="radio" id="teacher" value="Teacher" v-model="formData.accountType"> Репетитор 
+                    </label>
+                    <label for="student">
+                        <input type="radio" id="student" value="Student" v-model="formData.accountType"> Студент
+                    </label>
+            <br>
             <button class="btn btn-success" @click="signUp">SignUp</button>
         </div>
 
@@ -22,7 +30,8 @@ export default {
             formData:{
                 name: '',
                 email:'',
-                password:''
+                password:'',
+                accountType: 'Teacher',
             }
         }
     },
@@ -44,7 +53,8 @@ export default {
                                 name: user.displayName,
                                 email: user.email,
                                 uid : user.uid,
-                                avatar: user.photoURL
+                                avatar: user.photoURL,
+                                accountType: me.formData.accountType
                             });
                         })
                         console.log("User is signed in.");

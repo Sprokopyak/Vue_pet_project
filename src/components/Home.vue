@@ -1,8 +1,7 @@
 <template>
 <div class="container">
-    <h3>Movies to watch</h3>
     <div class="row">
-        <div class=" col-md-6 col-md-offset-3">
+        <!-- <div class=" col-md-6 col-md-offset-3">
             <input placeholder="add movie" @keyup.enter="addMovie" type="text" v-model="movie" class="form-control">  
             <ul>
                 <li v-for="(movie,key) in fireData" :key=key >
@@ -13,7 +12,22 @@
                 <input v-if='editFormMode.includes(key)' type="text" v-model='editingMovie[key]' @keyup.enter='editMovie(key)' class="form-control">
                 </li>
             </ul>
-        </div>
+        </div> -->
+         <div class=" col-md-6 col-md-offset-3">
+        <ul>
+            <li v-for="(user,key) in fireData" :key=key >
+                <div v-if="user.accountType === 'Teacher'">
+                    <h2>User name: {{user.name}}</h2> 
+                    <h3>User email: {{user.email}}</h3>
+                    <img :src="user.avatar">
+                    <button class="btn btn-xs btn-primary" @click='editFormMode.push(key);'>Edit</button> 
+                     <br>
+                    <br>
+                    <input v-if='editFormMode.includes(key)' type="text" v-model='editingUser[key]' @keyup.enter='editUser(key)' class="form-control">
+                </div>
+            </li>
+        </ul>
+         </div>
     </div>
 </div>    
 </template>
@@ -23,25 +37,16 @@ export default {
     data () {
         return {
             movies:[],
-            movie:null,
             fireData:null,
-            editingMovie:[],
+            editingUser:[],
             editFormMode:[]
         }
     },
     methods:{
-        addMovie(){
-            this.movies.push(this.movie);
-            firebase.database().ref('movies').push({
-                name:this.movie
-            });
-
-            this.movie=null;
-        },
-
-        editMovie(key){
-            firebase.database().ref('movies/'+key).set({
-                name: this.editingMovie[key]
+        editUser(key){
+            console.log(key) 
+            firebase.database().ref('users/'+ key).update({ 
+                name: this.editingUser[key]
             })
             .then((data)=>{
                 this.editingMovie[key]=null;
@@ -50,18 +55,18 @@ export default {
         },
 
         deleteMovie(key){
-            firebase.database().ref('movies/'+key).remove();
+            firebase.database().ref('movies/' + key).remove();
         },
 
-        fetchFirebaseData(){
-            firebase.database().ref('movies').on('value',(snapshot)=>{
-                this.fireData=snapshot.val();
+        fetchFirebaseUserData(){
+            firebase.database().ref('users').on('value',(snapshot)=>{
+                this.fireData = snapshot.val();
             });
         }
     },
 
     created(){
-        this.fetchFirebaseData();
+        this.fetchFirebaseUserData();
     }
 }
 </script>
