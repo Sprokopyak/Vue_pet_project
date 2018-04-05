@@ -17,8 +17,11 @@
         <ul>
             <li v-for="(user,key) in fireData" :key=key >
                 <div v-if="user.accountType === 'Teacher'">
+                    <router-link :to="/user/+ user.uid">
+                    <p>{{key}}</p>
                     <h2>User name: {{user.name}}</h2> 
                     <h3>User email: {{user.email}}</h3>
+                     </router-link>
                     <img :src="user.avatar">
                     <button class="btn btn-xs btn-primary" @click='editFormMode.push(key);'>Edit</button> 
                      <br>
@@ -49,7 +52,7 @@ export default {
                 name: this.editingUser[key]
             })
             .then((data)=>{
-                this.editingMovie[key]=null;
+                this.editingUser[key]=null;
                 this.editFormMode=[];
             })
         },

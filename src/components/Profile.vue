@@ -1,9 +1,14 @@
 <template>
     <div class="container">
+        <p>{{userId}}</p>
         <div class=" col-md-6 col-md-offset-3" v-if="fireData !== null">
             <h2>User name: {{fireData.name}}</h2> 
             <h3>User email: {{fireData.email}}</h3>
             <img :src="fireData.avatar">
+            <button v-if="currentUserId === userId" class="btn btn-xs btn-primary" @click='editFormMode.push(fireData.uid);'>Edit</button> 
+            <br>
+            <br>
+            <input v-if='editFormMode.includes(fireData.uid)' type="text" v-model='editingUser[fireData.uid]' @keyup.enter='editUser(fireData.uid)' class="form-control">
         </div>
     </div>
 </template>
@@ -13,20 +18,38 @@
 export default {
     data(){
         return {
-            fireData:null
+            fireData:null,
+            userId: this.$route.params.id,
+            currentUserId: null,
+            editingUser:[],
+            editFormMode:[]
+        }
+    },
+    watch: {
+        '$route'(to, from) {
+            this.userId = to.params.id;
         }
     },
     methods:{
         setAuthUser(){
             var me = this
-            var user = firebase.auth().currentUser;
-            if(user){
-                var userId = user.uid;
-                return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+            this.currentUserId = firebase.auth().currentUser.uid;
+            // if(user){
+                return firebase.database().ref('/users/' + this.userId).once('value').then(function(snapshot) {
                         console.log(snapshot.val())
                          me.fireData = snapshot.val();
                 });
-            }
+            // }
+        },
+         editUser(key){
+            console.log(key) 
+            firebase.database().ref('users/'+ key).update({ 
+                name: this.editingUser[key]
+            })
+            .then((data)=>{
+                this.editingUser[key]=null;
+                this.editFormMode=[];
+            })
         },
     },
      created(){

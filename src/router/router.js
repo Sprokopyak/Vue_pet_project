@@ -12,13 +12,7 @@ const routes = [
   { path: '/', component: Home },
   { path: '/sign-in', component: SignIn },
   { path: '/sign-up', component: Signup },
-  { path: '/user', components: {
-    default: Profile,
-     }, children: [
-    {path: ':id', component: Profile, beforeEnter: (to, from, next) => {
-        next()
-    }},
-] },
+  { path: '/user/:id',  name: 'user', component: Profile},
   { path: '*', redirect: '/' }
 ]
 

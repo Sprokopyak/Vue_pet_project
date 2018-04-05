@@ -5,19 +5,22 @@
             <div class="navbar-header">
                 <router-link to="/" tag="a" class="navbar-brand">WebSiteName</router-link>
             </div>
-            <!-- <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#">Page 1</a></li>
-            <li><a href="#">Page 2</a></li>
-            </ul> -->
+            <ul class="nav navbar-nav">
+                <li v-if="authUser">
+                    <router-link :to="/user/ + userCurrent" tag="a" class="navbar-brand">Profile</router-link>
+                </li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li v-if="!authUser">
                     <router-link to="/sign-up" tag="a"><span class="glyphicon glyphicon-user"></span> Зареєструватись</router-link>
                 </li>
                 
-
                 <li v-if="!authUser">
                     <router-link to="/sign-in" tag="a" ><span class="glyphicon glyphicon-log-in"></span> Увійти</router-link>
+                </li>
+                <li v-if="authUser">
+                    <a > Ви увійшли як: {{userName}}</a>
+                    <!-- <a href="#">{{authUser.identifier}}</a> -->
                 </li>
                 <li v-if="authUser">
                     <a @click="logout"><span class="glyphicon glyphicon-log-in"></span> Вийти</a>
@@ -35,7 +38,9 @@ export default {
     data(){
         return {
             authUser: null,
-            fireData:null
+            fireData:null,
+            userCurrent: null,
+            userName: null,
         }
     },
 
@@ -45,11 +50,13 @@ export default {
 
     methods:{
         setAuthUser(){
-            this.authUser =firebase.auth().currentUser;
+            var me = this;
+            this.authUser = firebase.auth().currentUser;
             if(this.authUser){
-                var userId = firebase.auth().currentUser.uid;
+                var userId = this.authUser.uid;
+                this.userCurrent = userId
                 return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
-                var username = (snapshot.val() && snapshot.val().name) || 'Anonymous';
+                me.userName  = snapshot.val().name || 'Anonymous';
                         console.log(snapshot.val())
                 });
             }
