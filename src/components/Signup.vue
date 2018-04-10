@@ -17,9 +17,13 @@
                         <input type="radio" id="student" value="Student" v-model="formData.accountType"> Студент
                     </label>
             <br>
+             <br>
+             <input type="file" ref="fileInput" accept="image/*" @change="onFilePicked">
+              <br>
+              <br>
             <button class="btn btn-success" @click="signUp">SignUp</button>
         </div>
-
+        <img :src="formData.photoURL" alt="">
     </div>
 </template>
 
@@ -31,7 +35,9 @@ export default {
                 name: '',
                 email:'',
                 password:'',
+                photoURL:'',
                 accountType: 'Teacher',
+                image: null
             }
         }
     },
@@ -44,18 +50,30 @@ export default {
             })
             .then(()=> {
                 firebase.auth().onAuthStateChanged(function(user) {
+                    // if(!me.formData.image){
+                    //     return;
+                    // }
                     if(user) {
                         user.updateProfile({
                             displayName: me.formData.name,
                             photoURL: `http://www.gravatar.com/avatar/`
                         }).then(()=>{
+                            const uId = user.uid;
                             firebase.database().ref('users').child(user.uid).set({
                                 name: user.displayName,
                                 email: user.email,
                                 uid : user.uid,
-                                avatar: user.photoURL,
+                                // avatar: me.formData.photoURL,
+                                avatar: me.formData.image,
                                 accountType: me.formData.accountType
                             });
+                            return uId
+                        }).then(key=>{
+                            console.log(key)
+                            return firebase.storage().ref('users/' + key).put()
+                        }).then(fileData=>{
+                            let image = fileData.metadata.downloadURLs[0];
+                            return firebase.database().ref('users/').child(uId).update({avatar: image})
                         })
                         console.log("User is signed in.");
                     } else {
@@ -68,6 +86,22 @@ export default {
                 alert('oops'+e.message);
             })
         },
+        onPickFile(){
+            this.$refs.fileInput.click()
+        },
+        onFilePicked(event){
+            const files = event.target.files;
+            let filename = files[0].name;
+            if(filename.lastIndexOf('.')<=0){
+                return alert('Please add a valid file!')
+            }
+            const fileReader = new FileReader();
+            fileReader.addEventListener('load', ()=>{
+                this.formData.photoURL=fileReader.result
+            })
+            fileReader.readAsDataURL(files[0])
+            this.formData.image= files[0]
+        }
     },
 
     created(){

@@ -28,18 +28,18 @@ export default {
     watch: {
         '$route'(to, from) {
             this.userId = to.params.id;
-        }
+            this.setAuthUser()
+        },
     },
+    
     methods:{
         setAuthUser(){
             var me = this
             this.currentUserId = firebase.auth().currentUser.uid;
-            // if(user){
                 return firebase.database().ref('/users/' + this.userId).once('value').then(function(snapshot) {
                         console.log(snapshot.val())
                          me.fireData = snapshot.val();
                 });
-            // }
         },
          editUser(key){
             console.log(key) 

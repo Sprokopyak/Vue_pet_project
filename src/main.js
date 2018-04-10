@@ -11,7 +11,8 @@ var config = {
     databaseURL: "https://my-project2-e2e7e.firebaseio.com",
     projectId: "my-project2-e2e7e",
     storageBucket: "my-project2-e2e7e.appspot.com",
-    messagingSenderId: "853779935094"
+    messagingSenderId: "853779935094",
+    storageBucket: 'gs://my-project2-e2e7e.appspot.com'
 };
 
 firebase.initializeApp(config);
