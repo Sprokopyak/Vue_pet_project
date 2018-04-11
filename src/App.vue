@@ -7,7 +7,7 @@
             </div>
             <ul class="nav navbar-nav">
                 <li v-if="authUser">
-                    <router-link :to="/user/ + userCurrent" tag="a" class="navbar-brand">Profile</router-link>
+                    <router-link :to="/user/ + userId" tag="a" class="navbar-brand">Profile</router-link>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -38,20 +38,8 @@ export default {
     data(){
         return {
             authUser: null,
-             userId: this.$route.params.id,
-            fireData:null,
-            userCurrent: null,
+            userId: this.$route.params.id,
             userName: null,
-        }
-    },
-
-    // watch:{
-    //     '$route':'setAuthUser'
-    // },
-     watch: {
-        '$route'(to, from) {
-            this.userId = to.params.id;
-           
         }
     },
 
@@ -60,12 +48,8 @@ export default {
             var me = this;
             this.authUser = firebase.auth().currentUser;
             if(this.authUser){
-               this.userId = this.authUser.uid;
-                this.userCurrent = this.userId
-                return firebase.database().ref('/users/' + this.userId).once('value').then(function(snapshot) {
-                me.userName  = snapshot.val().name || 'Anonymous';
-                        // console.log(snapshot.val())
-                });
+                this.userId = this.authUser.uid;
+                this.userName = this.authUser.email;
             }
         },
 
@@ -77,16 +61,11 @@ export default {
             .catch((e)=>{
                 alert(e.message)
             })
-        },
-        fetchFirebaseUserData(){
-            firebase.database().ref('/users/').on('value',(snapshot)=>{
-                console.log(snapshot.val())
-            });
         }
     },
 
     created(){
-        this.setAuthUser();
+        this.setAuthUser(); 
     }
 }
 </script>

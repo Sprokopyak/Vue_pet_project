@@ -37,7 +37,7 @@ export default {
             var me = this
             this.currentUserId = firebase.auth().currentUser.uid;
                 return firebase.database().ref('/users/' + this.userId).once('value').then(function(snapshot) {
-                        console.log(snapshot.val())
+                        // console.log(snapshot.val())
                          me.fireData = snapshot.val();
                 });
         },

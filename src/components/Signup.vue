@@ -23,7 +23,7 @@
               <br>
             <button class="btn btn-success" @click="signUp">SignUp</button>
         </div>
-        <img :src="formData.photoURL" alt="">
+        <img :src="formData.image" alt="">
     </div>
 </template>
 
@@ -35,7 +35,6 @@ export default {
                 name: '',
                 email:'',
                 password:'',
-                photoURL:'',
                 accountType: 'Teacher',
                 image: null
             }
@@ -45,67 +44,51 @@ export default {
         signUp(){
             var me = this;
             firebase.auth().createUserWithEmailAndPassword(this.formData.email,this.formData.password)
-            .then(user=> {
-                this.$router.replace('/hello')
+            .then((user)=> {
+                if(user) {
+                    user.updateProfile({
+                        displayName: me.formData.name,
+                    })
+                    .then(()=>{
+                        firebase.database().ref('users').child(user.uid).set({
+                            name: me.formData.name,
+                            email: user.email,
+                            uid : user.uid,
+                            avatar: me.formData.image,
+                            accountType: me.formData.accountType
+                        });
+                        return firebase.storage().ref('users/' + user.uid).put(me.formData.image);
+                    }) 
+                    .then(fileData=>{
+                        let image = fileData.metadata.downloadURLs[0];
+                        return firebase.database().ref('users/').child(user.uid).update({avatar: image})
+                    })
+                    console.log("User is signed in.");
+                } else {
+                    console.log("No user is signed in.");
+                }
             })
-            .then(()=> {
-                firebase.auth().onAuthStateChanged(function(user) {
-                    // if(!me.formData.image){
-                    //     return;
-                    // }
-                    if(user) {
-                        user.updateProfile({
-                            displayName: me.formData.name,
-                            photoURL: `http://www.gravatar.com/avatar/`
-                        }).then(()=>{
-                            const uId = user.uid;
-                            firebase.database().ref('users').child(user.uid).set({
-                                name: user.displayName,
-                                email: user.email,
-                                uid : user.uid,
-                                // avatar: me.formData.photoURL,
-                                avatar: me.formData.image,
-                                accountType: me.formData.accountType
-                            });
-                            return uId
-                        }).then(key=>{
-                            console.log(key)
-                            return firebase.storage().ref('users/' + key).put()
-                        }).then(fileData=>{
-                            let image = fileData.metadata.downloadURLs[0];
-                            return firebase.database().ref('users/').child(uId).update({avatar: image})
-                        })
-                        console.log("User is signed in.");
-                    } else {
-                        console.log("No user is signed in.");
-                    }
-                });
-
+            .then(user=> {
+                this.$router.push('/')
             })
             .catch((e)=>{
-                alert('oops'+e.message);
+                alert('Oops'+e.message);
             })
         },
+
         onPickFile(){
             this.$refs.fileInput.click()
         },
+
         onFilePicked(event){
             const files = event.target.files;
-            let filename = files[0].name;
-            if(filename.lastIndexOf('.')<=0){
-                return alert('Please add a valid file!')
-            }
             const fileReader = new FileReader();
             fileReader.addEventListener('load', ()=>{
-                this.formData.photoURL=fileReader.result
+                this.formData.image = fileReader.result
             })
-            fileReader.readAsDataURL(files[0])
-            this.formData.image= files[0]
+             fileReader.readAsDataURL(files[0])
+            this.formData.image = files[0]
         }
-    },
-
-    created(){
-        
     }
 }
 </script>
