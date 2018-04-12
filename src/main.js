@@ -21,6 +21,7 @@ window.firebase=firebase;
 
 /* eslint-disable no-new */
 firebase.auth().onAuthStateChanged((user)=>{
+    console.log(user)
     new Vue({
         el: '#app',
         router,
