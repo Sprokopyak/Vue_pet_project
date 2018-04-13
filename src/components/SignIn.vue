@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <h2>Signin</h2>
-
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
+            <h3>Увійти</h3>
+            <br>
             <input type="email" v-model="formData.email" class="form-control" placeholder="email">
             <br>
             <input type="password" v-model="formData.password" class="form-control" placeholder="password">

@@ -1,67 +1,58 @@
 <template>
     <div class="container">
-        <h2>Signup</h2>
-
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
+            <h3>Реєстрація</h3>
+            <br>
             <input type="text" v-model="formData.name" class="form-control" placeholder="Ім'я">
             <br>
             <input type="email" v-model="formData.email" class="form-control" placeholder="Емейл">
             <br>
             <input type="password" v-model="formData.password" class="form-control" placeholder="Пароль">
             <br>
+            <label for="img">Виберіть зображення:    </label>   
+            <input id="img" type="file" ref="fileInput" accept="image/*" @change="onFilePicked">
+            <br>        
             <span>Зареєструватись як:</span>  
-             <label for="teacher"> 
-                        <input type="radio" id="teacher" value="Teacher" v-model="formData.accountType"> Репетитор 
-                    </label>
-                    <label for="student">
-                        <input type="radio" id="student" value="Student" v-model="formData.accountType"> Студент
-                    </label>
+            <label for="teacher"> 
+                <input type="radio" id="teacher" value="Teacher" v-model="formData.accountType"> Репетитор 
+            </label>
+            <label for="student">
+                <input type="radio" id="student" value="Student" v-model="formData.accountType"> Студент
+            </label>
             <br>
             <br>
             <span v-if="formData.accountType === 'Teacher'">
-                <label for="price"> Вартість заняття грн/год:
-                    <input  v-model="formData.teacher.price" class="form-control" type="number">
-                </label>
+                <label for="price"> Вартість заняття грн/год:</label>
+                <input id="price"  v-model="formData.price" class="form-control" type="number">
                 <br>
+                <label for="experience"> Ваш досвід роботи (років): </label>
+                <input id="experience" v-model="formData.experience" class="form-control" type="number">
                 <br>
-                <label for="experience"> Ваш досвід (років):
-                    <input id="experience" v-model="formData.teacher.experience" class="form-control" type="number">
-                </label>
-                <br>
-                <br>
-                 <label for="priority">Рівні підготовки студента:</label>
+                <label for="priority">Рівні підготовки студента:</label>
                 <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="setModel(selectedDropdown)">
                     <option v-for="item in dropDown" :key="item">{{item}}</option>
                 </select>
-                <ul v-if="formData.teacher.selected.length !== 0">
-                    <li v-for="(val, key) in formData.teacher.selected" :key="val">
-                        <p>{{val}}</p>
-                        <button class="btn btn-xs btn-danger" @click='deleteVal(key, val);'>Delete</button> 
+                <ul v-if="formData.selected.length !== 0">
+                    <li v-for="(val, key) in formData.selected" :key="val">
+                        <p style="float: left; margin: 10px 0">{{val}}</p>
+                        <button style="margin: 10px" class="btn btn-xs btn-danger" @click='deleteVal(key, val);'>Delete</button> 
                     </li>
                 </ul>
                 <br>
-                <br>
                 <label>Місце проведення занятть:
-                    <input type="checkbox" id="stud" value="В учня" v-model="formData.teacher.checkedPlace">
+                    <input type="checkbox" id="stud" value="В учня" v-model="formData.checkedPlace">
                     <label for="stud"> В учня </label>
-                    <input type="checkbox" id="teach" value="В репетитора" v-model="formData.teacher.checkedPlace">
+                    <input type="checkbox" id="teach" value="В репетитора" v-model="formData.checkedPlace">
                     <label for="teach"> В репетитора</label>
                     <br>
-                    <span>Місце: {{ formData.teacher.checkedPlace }}</span>
                 </label>
                 <br>
                 <br>
-                <textarea v-model="formData.teacher.description" placeholder="Коротко про себе"></textarea>
+                <textarea class="form-control" rows="5" v-model="formData.description" placeholder="Коротко про себе"></textarea>
+                <br>
             </span>
- 
-            <br>        
-            <br>
-            <input type="file" ref="fileInput" accept="image/*" @change="onFilePicked">
-            <br>
-            <br>
-            <button class="btn btn-success" @click="signUp">SignUp</button>
+            <button class="btn btn-success" @click="signUp">Зареєструватись</button>
         </div>
-        <img :src="formData.image" alt="">
     </div>
 </template>
 
@@ -77,13 +68,11 @@ export default {
                 password:'',
                 accountType: 'Student',
                 image: null,
-                teacher: {
-                    price: null,
-                    experience: null,
-                    checkedPlace: [],
-                    selected: [],
-                    description: ''
-                }
+                price: null,
+                experience: null,
+                checkedPlace: [],
+                selected: [],
+                description: null
             }
         }
     },
@@ -91,7 +80,7 @@ export default {
         setModel: function (e) {         
             for(var i in this.dropDown){
                 if(this.dropDown[i]===e){
-                    this.formData.teacher.selected.push(e);
+                    this.formData.selected.push(e);
                     this.dropDown.splice(i,1);
                     break;
                 }
@@ -100,7 +89,7 @@ export default {
 
         deleteVal(key, val){
             this.dropDown.push(val)
-            this.formData.teacher.selected.splice(key,1);
+            this.formData.selected.splice(key,1);
         },
 
         signUp(){
@@ -118,7 +107,11 @@ export default {
                             uid : user.uid,
                             avatar: me.formData.image,
                             accountType: me.formData.accountType,
-                            registered: me.formData.registered
+                            price: me.formData.price,
+                            experience: me.formData.experience,
+                            checkedPlace: me.formData.checkedPlace,
+                            selected: me.formData.selected,
+                            description: me.formData.description
                         });
                         return firebase.storage().ref('users/' + user.uid).put(me.formData.image);
                     }) 
