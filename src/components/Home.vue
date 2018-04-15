@@ -50,84 +50,104 @@
 
 
 
-    <div class="container-fluid" style="background-color:#F3F3F3">
-        <div class="container container-pad" id="property-listings">
-            <div class="row">
-              <div class="col-md-12">
-                <h1>Репетитор у Львові</h1>
-                <p>Обирайте кращих викладачів на нашому сайті</p>
-              </div>
+<div class="container-fluid" style="background-color:#F3F3F3">
+    <div class="container container-pad" id="property-listings">
+        <div class="row">
+            <div class="col-md-12">
+            <h1>Репетитор у Львові</h1>
+            <p>Обирайте кращих викладачів на нашому сайті</p>
             </div>
-            
-            <div class="row">
-                <div class="col-sm-12" v-for="(user,key) in fireData" :key=key> 
 
-                    <div class="brdr bgc-fff pad-10 box-shad btm-mrg-20 property-listing" v-if="user.accountType === 'Teacher'">
-                        <div class="media">
-                            <img v-if="user.avatar === ''" alt="image" class="img-responsive pull-left" src='http://images.prd.mris.com/image/V2/1/Yu59d899Ocpyr_RnF0-8qNJX1oYibjwp9TiLy-bZvU9vRJ2iC1zSQgFwW-fTCs6tVkKrj99s7FFm5Ygwl88xIA.jpg'>
-                            <img v-if="user.avatar !== ''" alt="image" class="img-responsive pull-left" :src='user.avatar'>
+      
+<div>
+    <label for="from"> Ціна від:
+         <input id="from" type="number" v-model.number="priceValueFrom" v-on:keyup="orderBy(priceValueFrom, 'price')" class="form-control">
+    </label>
+    <label for="to"> Ціна до:
+         <input v-model.number="priceValueTo" v-on:keyup="orderBy(priceValueTo, 'price')" id="to" type="number" class="form-control">
+    </label>
+
+    <label for="from"> Досвід від:
+         <input id="from" type="number" v-model.number="experienceValueFrom" v-on:keyup="orderBy(experienceValueFrom, 'experience')" class="form-control">
+    </label>
+    <label for="to"> Досві до:
+         <input v-model.number="experienceValueTo" v-on:keyup="orderBy(experienceValueTo, 'experience')" id="to" type="number" class="form-control">
+    </label>
+   
+</div>
+
+            <div class="col-sm-12" v-for="(user,key) in fireData" :key=key> 
+
+                <div class="brdr bgc-fff pad-10 box-shad btm-mrg-20 property-listing" v-if="user.accountType === 'Teacher' ">
+                    <div class="media">
+                        <img v-if="!user.avatar" alt="image" class="img-responsive pull-left" src='http://images.prd.mris.com/image/V2/1/Yu59d899Ocpyr_RnF0-8qNJX1oYibjwp9TiLy-bZvU9vRJ2iC1zSQgFwW-fTCs6tVkKrj99s7FFm5Ygwl88xIA.jpg'>
+                        <img v-if="user.avatar" alt="image" class="img-responsive pull-left" :src='user.avatar'>
+                        
+                        <div class="media-body fnt-smaller clearfix ">
+                            <h4> {{user.name}} 
+                                <small class="pull-right"> 
+                                <span class="glyphicon glyphicon-map-marker"></span> м. Львів | <span class="glyphicon glyphicon-usd"></span>
+                                <span >{{user.price}} грн/год</span>
+                                </small>
+                            </h4>
+                            <hr style="margin:10px 0">
                             
-                            <div class="media-body fnt-smaller clearfix ">
-                                <h4> {{user.name}} 
-                                    <small class="pull-right"> 
-                                    <span class="glyphicon glyphicon-map-marker"></span> м. Львів | <span class="glyphicon glyphicon-usd"></span>
-                                    <span >{{user.price}} грн/год</span>
-                                    </small>
-                                </h4>
-                                <hr style="margin:10px 0">
-                                
-                                <p v-if="user.experience < 2"> <span class="bold">Досві роботи: </span> {{user.experience}} рік</p>
-                                <p v-if="user.experience > 1"> <span class="bold">Досві роботи: </span> {{user.experience}} роки</p>
+                            <p v-if="user.experience < 2"> <span class="bold">Досві роботи: </span> {{user.experience}} рік</p>
+                            <p v-if="user.experience > 1"> <span class="bold">Досві роботи: </span> {{user.experience}} роки</p>
+<router-link :to="/user/+ user.uid">
+                            <ul style=" padding: 0" >
+                                <p class="pull-left bold">Рівні підготовки: </p>
+                                <li style="display: inline-block; margin-left: 5px" v-for="u in user.selected" :key=u> {{u}}, </li>
+                            </ul>
+</router-link>
+                            <ul style=" padding: 0" >
+                                <p style="display: inline-block" class="pull-left bold">Можливість проведення занятть: </p>
+                                <li style="display: inline-block; margin-left: 5px" v-for="place in user.checkedPlace" :key=place> {{place}}, </li>
+                            </ul>
+                            <p><span class="bold"> Про репетитора: </span> {{user.description}} </p>
+                            <button v-if="authUser.uid !== user.uid" class="btn btn-xs btn-primary" :disabled="editFormMode.includes(key) ? true : false" @click='editFormMode.push(key)'>Зв'язатись з репетитором</button> 
+                            
+                          
+                            
 
-                                <ul style=" padding: 0" >
-                                    <p class="pull-left bold">Рівні підготовки: </p>
-                                    <li style="display: inline-block; margin-left: 5px" v-for="u in user.selected" :key=u> {{u}}, </li>
-                                </ul>
 
-                                <ul style=" padding: 0" >
-                                    <p style="display: inline-block" class="pull-left bold">Можливість проведення занятть: </p>
-                                    <li style="display: inline-block; margin-left: 5px" v-for="place in user.checkedPlace" :key=place> {{place}}, </li>
-                                </ul>
-                                <p><span class="bold"> Про репетитора: </span> {{user.description}} </p>
-                                <button class="btn btn-xs btn-primary" :disabled="editFormMode.includes(key) ? true : false" @click='editFormMode.push(key)'>Зв'язатись з репетитором</button> 
-                                  
-                                <div class="modal-dialog " id="modal" v-if='editFormMode.includes(key)'>
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button aria-label="Close" class="close" type="button">
-                                                <span aria-hidden="true" @click="editFormMode.pop()">×</span>
-                                            </button>
-                                            <h4 class="modal-title">Залиште свої контактні дані</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="text"  class="form-control" placeholder="Ім'я" v-model="studentContact.name">
-                                            <br>
-                                            <input type="number" class="form-control" placeholder="Номер телефону" v-model="studentContact.phone">
-                                            <br>
-                                            <textarea class="form-control"  rows="4" placeholder="Що саме ви хотіли б вивчити?" v-model="studentContact.comment"></textarea>
-                                            <br>
-                                            <button class="btn btn-success" @click='bookTeacher(key)'>Відправити</button>
-                                        </div>
+                            <div class="modal-dialog " id="modal" v-if='editFormMode.includes(key)'>
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-label="Close" class="close" type="button">
+                                            <span aria-hidden="true" @click="editFormMode.pop()">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Залиште свої контактні дані</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="text"  class="form-control" placeholder="Ім'я" v-model="studentContact.name">
+                                        <br>
+                                        <input type="number" class="form-control" placeholder="Номер телефону" v-model="studentContact.phone">
+                                        <br>
+                                        <textarea class="form-control"  rows="4" placeholder="Що саме ви хотіли б вивчити?" v-model="studentContact.comment"></textarea>
+                                        <br>
+                                        <button class="btn btn-success" @click='bookTeacher(key)'>Відправити</button>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="modal-dialog " id="modal" v-if='modalShow === true'>
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button aria-label="Close" class="close" type="button">
-                                                <span aria-hidden="true" @click="closeModal">×</span>
-                                            </button>
-                                            <h4 class="modal-title">Дякуємо! Репетиртор зв'яжеться з вами найближчиш часом</h4>
-                                        </div>
+                            <div class="modal-dialog " id="modal" v-if='modalShow === true'>
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button aria-label="Close" class="close" type="button">
+                                            <span aria-hidden="true" @click="closeModal">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Дякуємо! Репетиртор зв'яжеться з вами найближчиш часом</h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div><!-- End Listing-->
-                </div>
-            </div><!-- End row -->
-        </div><!-- End container -->
-    </div>
+                    </div>
+                </div><!-- End Listing-->
+            </div>
+        </div><!-- End row -->
+    </div><!-- End container -->
+</div>
 </div>    
 </template>
 
@@ -145,10 +165,39 @@ export default {
                 name: null,
                 phone: null,
                 comment: null
-            }
+            },
+             authUser: null,
+             priceValueFrom: 0,
+             priceValueTo: 0,
+             experienceValueFrom: 0,
+             experienceValueTo: 0,
         }
     },
     methods:{
+        orderBy(v, s){
+            console.log(this.priceValueFrom, this.priceValueTo)
+            if(s === 'price'){
+                this.experienceValueFrom= 0;
+                 this.experienceValueTo= 0;
+                firebase.database().ref('users').orderByChild('price').startAt(this.priceValueFrom).endAt(this.priceValueTo).limitToFirst(3).on('value',(snapshot)=>{
+                    this.fireData = snapshot.val();
+                });
+            } else if( s === 'experience'){
+                this.priceValueFrom= 0;
+                this.priceValueTo= 0;
+                 firebase.database().ref('users').orderByChild('experience').startAt(this.experienceValueFrom).endAt(this.experienceValueTo).limitToFirst(3).on('value',(snapshot)=>{
+                    this.fireData = snapshot.val();
+                });
+            }
+            
+        },
+        // price(v){
+        //     console.log(this.priceValueFrom, this.priceValueTo)
+        //     firebase.database().ref('users').orderByChild("price").startAt(this.priceValueFrom).endAt(this.priceValueTo).limitToFirst(3).on('value',(snapshot)=>{
+        //         this.fireData = snapshot.val();
+        //         console.log(this.fireData)
+        //     });
+        // },
         bookTeacher(key){
              firebase.database().ref('users/' + key).child("studentContact").push(this.studentContact) 
              .then(()=>{
@@ -180,14 +229,37 @@ export default {
         },
 
         fetchFirebaseUserData(){
-            firebase.database().ref('users').on('value',(snapshot)=>{
+            var me =this;
+            var db = firebase.database().ref('users');
+          
+            
+            var lastKnownDomainValue = null;
+            db.on('value', function(snapshot) {
+                snapshot.forEach(function(childSnap) {
+                    if(childSnap.val().price > me.priceValueTo){
+                        me.priceValueTo = childSnap.val().price;
+                    } 
+                     if(childSnap.val().experience > me.experienceValueTo){
+                        me.experienceValueTo = childSnap.val().experience;
+                    }
+                });
+            });
+
+
+           
+            this.authUser = firebase.auth().currentUser;
+           
+            db.limitToFirst(3).on('value',(snapshot, t)=>{
                 this.fireData = snapshot.val();
+              
+               
             });
         }
     },
 
     created(){
         this.fetchFirebaseUserData();
+       
     }
 }
 </script>

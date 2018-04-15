@@ -23,10 +23,10 @@
             <br>
             <span v-if="formData.accountType === 'Teacher'">
                 <label for="price"> Вартість заняття грн/год:</label>
-                <input id="price"  v-model="formData.price" class="form-control" type="number">
+                <input id="price"  v-model.number="formData.price" class="form-control" type="number">
                 <br>
                 <label for="experience"> Ваш досвід роботи (років): </label>
-                <input id="experience" v-model="formData.experience" class="form-control" type="number">
+                <input id="experience" v-model.number="formData.experience" class="form-control" type="number">
                 <br>
                 <label for="priority">Рівні підготовки студента:</label>
                 <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="setModel(selectedDropdown)">
@@ -68,8 +68,8 @@ export default {
                 password:'',
                 accountType: 'Student',
                 image: null,
-                price: null,
-                experience: null,
+                price: 0,
+                experience: 0,
                 checkedPlace: [],
                 selected: [],
                 description: null

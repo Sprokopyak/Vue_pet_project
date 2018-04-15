@@ -10,6 +10,12 @@
             <br>
             <input v-if='editFormMode.includes(fireData.uid)' type="text" v-model='editingUser[fireData.uid]' @keyup.enter='editUser(fireData.uid)' class="form-control">
         </div>
+        
+        <div v-for="(val, key) in studentContact" :key="key" v-if="currentUserId === userId">
+            <p>{{val.name}}</p>
+            <p>{{val.phone}}</p>
+            
+        </div>
     </div>
 </template>
 
@@ -22,7 +28,9 @@ export default {
             userId: this.$route.params.id,
             currentUserId: null,
             editingUser:[],
-            editFormMode:[]
+            editFormMode:[],
+            users: null,
+            studentContact: null
         }
     },
     watch: {
@@ -36,10 +44,13 @@ export default {
         setAuthUser(){
             var me = this
             this.currentUserId = firebase.auth().currentUser.uid;
-                return firebase.database().ref('/users/' + this.userId).once('value').then(function(snapshot) {
-                        // console.log(snapshot.val())
-                         me.fireData = snapshot.val();
-                });
+            firebase.database().ref('/users/' + this.userId).once('value').then(function(snapshot) {
+                me.fireData = snapshot.val();
+                me.studentContact=  me.fireData.studentContact
+            });
+            firebase.database().ref('users').on('value',(snapshot)=>{
+                this.users = snapshot.val();
+            })     
         },
          editUser(key){
             console.log(key) 
