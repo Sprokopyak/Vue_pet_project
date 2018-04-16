@@ -44,12 +44,6 @@
 
 
 
-
-
-
-
-
-
 <div class="container-fluid" style="background-color:#F3F3F3">
     <div class="container container-pad" id="property-listings">
         <div class="row">
@@ -59,21 +53,25 @@
             </div>
 
       
-<div>
-    <label for="from"> Ціна від:
-         <input id="from" type="number" v-model.number="priceValueFrom" v-on:keyup="orderBy(priceValueFrom, 'price')" class="form-control">
+<div class="row">
+    <label for="fromP"> Ціна від:
+         <input id="fromP" type="text" v-model.number="priceValueFrom" v-on:keyup="orderBy(priceValueFrom, 'price')" class="form-control">
     </label>
-    <label for="to"> Ціна до:
-         <input v-model.number="priceValueTo" v-on:keyup="orderBy(priceValueTo, 'price')" id="to" type="number" class="form-control">
+    <label for="toP"> Ціна до:
+         <input id="toP"  type="text" v-model.number="priceValueTo" v-on:keyup="orderBy(priceValueTo, 'price')" class="form-control">
     </label>
 
-    <label for="from"> Досвід від:
-         <input id="from" type="number" v-model.number="experienceValueFrom" v-on:keyup="orderBy(experienceValueFrom, 'experience')" class="form-control">
+    <label for="fromE"> Досвід від:
+         <input id="fromE" type="text" v-model.number="experienceValueFrom" v-on:keyup="orderBy(experienceValueFrom, 'experience')" class="form-control">
     </label>
-    <label for="to"> Досві до:
-         <input v-model.number="experienceValueTo" v-on:keyup="orderBy(experienceValueTo, 'experience')" id="to" type="number" class="form-control">
+    <label for="toE"> Досві до:
+         <input id="toE" type="text" v-model.number="experienceValueTo" v-on:keyup="orderBy(experienceValueTo, 'experience')" class="form-control">
     </label>
-   
+    <label for="priority">Рівні підготовки:
+    <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="orderBy(selectedDropdown, 'level')">
+        <option v-for="item in dropDown" :key="item">{{item}}</option>
+    </select>
+   </label>
 </div>
 
             <div class="col-sm-12" v-for="(user,key) in fireData" :key=key> 
@@ -105,8 +103,11 @@
                                 <li style="display: inline-block; margin-left: 5px" v-for="place in user.checkedPlace" :key=place> {{place}}, </li>
                             </ul>
                             <p><span class="bold"> Про репетитора: </span> {{user.description}} </p>
-                            <button v-if="authUser.uid !== user.uid" class="btn btn-xs btn-primary" :disabled="editFormMode.includes(key) ? true : false" @click='editFormMode.push(key)'>Зв'язатись з репетитором</button> 
-                            
+                           
+
+                           
+                            <button class="btn btn-xs btn-primary" :disabled="editFormMode.includes(key) ? true : false" @click='editFormMode.push(key)'>Зв'язатись з репетитором</button> 
+                        
                           
                             
 
@@ -145,6 +146,7 @@
                     </div>
                 </div><!-- End Listing-->
             </div>
+            <h1 v-if="fireData === null || fireData === '' || fireData.length === 0">За ваши запитом не знайдено жодного викладача</h1>
         </div><!-- End row -->
     </div><!-- End container -->
 </div>
@@ -166,38 +168,76 @@ export default {
                 phone: null,
                 comment: null
             },
-             authUser: null,
-             priceValueFrom: 0,
-             priceValueTo: 0,
-             experienceValueFrom: 0,
-             experienceValueTo: 0,
+            authUser: null,
+            priceValueFrom: 0,
+            priceValueTo: 0,
+            experienceValueFrom: 0,
+            experienceValueTo: 0,
+            dropDown: ['Репетитор для початківців', 'Рівень А1-А2 (Beginner, Elementary)', 'Рівень B1-B2 (Intermediate)', 'Рівень C1-C2 (Advanced, Proficiency)', 'Розмовна англійська', 'Ділова та бізнес мова', 'Університетські курси', 'Підготовка до вступу за кордон', 'До співбесіди в посольстві', 'TOEFL', 'IELTS'],
+            selectedDropdown: '',
+
+
+            show   : false, // display content after API request
+            offset : 1,     // items to display after scroll
+            display: 7,     // initial items
+            trigger: 100,   // how far from the bottom to trigger infinite scroll
+            end    : false,
         }
     },
+     mounted() {
+      // track scroll event
+      this.scroll();
+   },
     methods:{
-        orderBy(v, s){
-            console.log(this.priceValueFrom, this.priceValueTo)
-            if(s === 'price'){
-                this.experienceValueFrom= 0;
-                 this.experienceValueTo= 0;
-                firebase.database().ref('users').orderByChild('price').startAt(this.priceValueFrom).endAt(this.priceValueTo).limitToFirst(3).on('value',(snapshot)=>{
-                    this.fireData = snapshot.val();
-                });
-            } else if( s === 'experience'){
-                this.priceValueFrom= 0;
-                this.priceValueTo= 0;
-                 firebase.database().ref('users').orderByChild('experience').startAt(this.experienceValueFrom).endAt(this.experienceValueTo).limitToFirst(3).on('value',(snapshot)=>{
+        scroll() {
+            var arr = [];
+            window.onscroll = ev => {
+                for (let key in this.fireData){
+                        arr.push(key)
+                }
+                if (window.innerHeight + window.scrollY >= (document.body.offsetHeight - this.trigger)) {
+                    if (this.display < arr.length) {
+                            this.display += this.offset;
+                    } else {
+                        this.end = true;
+                    }
+                }
+                firebase.database().ref('users').limitToFirst(this.display).on('value',(snapshot)=>{
                     this.fireData = snapshot.val();
                 });
             }
-            
+         },
+
+        orderBy(value, s){
+            if(s === 'price'){
+                this.experienceValueFrom = 0;
+                 this.experienceValueTo = 0;
+                firebase.database().ref('users').orderByChild('price').startAt(this.priceValueFrom).endAt(this.priceValueTo).limitToFirst(this.display).on('value',(snapshot)=>{
+                    this.fireData = snapshot.val();
+                });
+            } else if( s === 'experience'){
+                this.priceValueFrom = 0;
+                this.priceValueTo = 0;
+                 firebase.database().ref('users').orderByChild('experience').startAt(this.experienceValueFrom).endAt(this.experienceValueTo).limitToFirst(this.display).on('value',(snapshot)=>{
+                    this.fireData = snapshot.val();
+                     console.log(    snapshot.val() )
+                });
+            } else if (s === 'level') {
+                var me = this;
+                var arr = [];
+                firebase.database().ref('users').once('value', (snapshot)=>{
+                    snapshot.forEach(function(childSnapshot) {
+                         let selectedArr = childSnapshot.val().selected
+                         selectedArr.map(val=> {
+                            if( val === value) {
+                                arr.push(childSnapshot.val()); 
+                            } 
+                         })
+                          me.fireData = arr;
+                    })
+                });
+            }   
         },
-        // price(v){
-        //     console.log(this.priceValueFrom, this.priceValueTo)
-        //     firebase.database().ref('users').orderByChild("price").startAt(this.priceValueFrom).endAt(this.priceValueTo).limitToFirst(3).on('value',(snapshot)=>{
-        //         this.fireData = snapshot.val();
-        //         console.log(this.fireData)
-        //     });
-        // },
         bookTeacher(key){
              firebase.database().ref('users/' + key).child("studentContact").push(this.studentContact) 
              .then(()=>{
@@ -207,7 +247,6 @@ export default {
                      this.modalShow= false;
                 }, 4000)
              })
-           
         },
         closeModal(){
             this.modalShow = false
@@ -231,11 +270,9 @@ export default {
         fetchFirebaseUserData(){
             var me =this;
             var db = firebase.database().ref('users');
-          
-            
             var lastKnownDomainValue = null;
             db.on('value', function(snapshot) {
-                snapshot.forEach(function(childSnap) {
+                snapshot.forEach((childSnap) =>{
                     if(childSnap.val().price > me.priceValueTo){
                         me.priceValueTo = childSnap.val().price;
                     } 
@@ -244,22 +281,15 @@ export default {
                     }
                 });
             });
-
-
-           
-            this.authUser = firebase.auth().currentUser;
-           
-            db.limitToFirst(3).on('value',(snapshot, t)=>{
+            this.authUser = firebase.auth().currentUser; 
+            db.limitToFirst(this.display).on('value',(snapshot, t)=>{
                 this.fireData = snapshot.val();
-              
-               
             });
         }
     },
 
     created(){
-        this.fetchFirebaseUserData();
-       
+        this.fetchFirebaseUserData(); 
     }
 }
 </script>
