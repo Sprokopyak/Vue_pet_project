@@ -1,13 +1,13 @@
 <template>
 <div id="app">
     <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
+        <div class="container">
+            <div class="navbar-header ">
                 <router-link to="/" tag="a" class="navbar-brand">WebSiteName</router-link>
             </div>
             <ul class="nav navbar-nav">
                 <li v-if="authUser">
-                    <router-link :to="/user/ + userId" tag="a" class="navbar-brand">Profile</router-link>
+                    <router-link :to="/user/ + userId" tag="a" class="navbar-brand">Мій профіль</router-link>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -71,11 +71,24 @@ export default {
 </script>
 
 <style>
-/* #app {
+.navbar {
+    border-radius: 0;
+    margin-bottom: -70px;
+    background-color:rgba(23, 24, 23, 0.58);
+    color: #000 !important;
+    border: 0;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.navbar-inverse .navbar-nav>li>a:hover {
+    color: #b8b6b6;
+}
+#app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-} */
+}
 </style>
