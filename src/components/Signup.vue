@@ -1,59 +1,98 @@
 <template>
-    <div class="container">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-md-offset-3">
-            <h3>Реєстрація</h3>
-            <br>
-            <input type="text" v-model="formData.name" class="form-control" placeholder="Ім'я">
-            <br>
-            <input type="email" v-model="formData.email" class="form-control" placeholder="Емейл">
-            <br>
-            <input type="password" v-model="formData.password" class="form-control" placeholder="Пароль">
-            <br>
-            <label for="img">Виберіть зображення:    </label>   
-            <input id="img" type="file" ref="fileInput" accept="image/*" @change="onFilePicked">
-            <br>        
-            <span>Зареєструватись як:</span>  
-            <label for="teacher"> 
-                <input type="radio" id="teacher" value="Teacher" v-model="formData.accountType"> Репетитор 
-            </label>
-            <label for="student">
-                <input type="radio" id="student" value="Student" v-model="formData.accountType"> Студент
-            </label>
-            <br>
-            <br>
-            <span v-if="formData.accountType === 'Teacher'">
-                <label for="price"> Вартість заняття грн/год:</label>
-                <input id="price"  v-model.number="formData.price" class="form-control" type="number">
-                <br>
-                <label for="experience"> Ваш досвід роботи (років): </label>
-                <input id="experience" v-model.number="formData.experience" class="form-control" type="number">
-                <br>
-                <label for="priority">Рівні підготовки студента:</label>
-                <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="setModel(selectedDropdown)">
-                    <option v-for="item in dropDown" :key="item">{{item}}</option>
-                </select>
-                <ul v-if="formData.selected.length !== 0">
-                    <li v-for="(val, key) in formData.selected" :key="val">
-                        <p style="float: left; margin: 10px 0">{{val}}</p>
-                        <button style="margin: 10px" class="btn btn-xs btn-danger" @click='deleteVal(key, val);'>Delete</button> 
-                    </li>
-                </ul>
-                <br>
-                <label>Місце проведення занятть:
-                    <input type="checkbox" id="stud" value="В учня" v-model="formData.checkedPlace">
-                    <label for="stud"> В учня </label>
-                    <input type="checkbox" id="teach" value="В репетитора" v-model="formData.checkedPlace">
-                    <label for="teach"> В репетитора</label>
-                    <br>
-                </label>
-                <br>
-                <br>
-                <textarea class="form-control" rows="5" v-model="formData.description" placeholder="Коротко про себе"></textarea>
-                <br>
-            </span>
-            <button class="btn btn-success" @click="signUp">Зареєструватись</button>
-        </div>
+
+ <div class="bg-container-contact100">
+	<div class="container-contact100">
+		<div class="wrap-contact100">
+			<div class="contact100-form-title">
+				<span>Зареєструватись</span>
+			</div>
+
+            <div class="contact100-form validate-form">
+				<div class="wrap-input100 validate-input">
+					<span class="label-input100">Ім'я:</span>
+					<input class="input100" type="text" name="name" v-model="formData.name" placeholder="Введіть ваше ім'я">
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input">
+					<span class="label-input100">Емейл:</span>
+					<input class="input100" type="text" name="email" v-model="formData.email"  placeholder="Введіть ваш емейл">
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input">
+					<span class="label-input100">Пароль:</span>
+					<input class="input100" type="password" name="password" v-model="formData.password" placeholder="Введіть ваш пароль">
+					<span class="focus-input100"></span>
+				</div>
+
+                <div class="img-input validate-input">
+					<span class="label-input100">Зображення:</span>
+					<input class="input100" type="file" ref="fileInput" accept="image/*" @change="onFilePicked" name="img"  >
+					<span class="focus-input100"></span>
+				</div>
+
+                <div class="wrap-input100 img-input validate-input">
+					<span class="label-input100">Зареєструватись як:</span>
+					<label for="teacher"> 
+                        <input type="radio" id="teacher" value="Teacher" v-model="formData.accountType"> Репетитор 
+                    </label>
+                    <label for="student">
+                        <input type="radio" id="student" value="Student" v-model="formData.accountType"> Студент
+                    </label>
+				</div>
+                
+                <div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
+					<span class="label-input100">Вартість заняття:</span>
+					<input class="input100" type="text" name="price" v-model.number="formData.price" placeholder="Введіть вартість заняття грн/год">
+					<span class="focus-input100"></span>
+				</div>
+
+                <div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
+					<span class="label-input100">Досвід роботи:</span>
+					<input class="input100" type="text" name="experience" v-model.number="formData.experience" placeholder="Введіть ваш досвід роботи (роки)">
+					<span class="focus-input100"></span>
+				</div>
+               
+                <div class="wrap-input100 img-input validate-input" v-if="formData.accountType === 'Teacher'">
+                    <span class="label-input100">Рівні підготовки студента:</span>
+                    <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="setModel(selectedDropdown)">
+                        <option v-for="item in dropDown" :key="item">{{item}}</option>
+                    </select>
+                    <ul v-if="formData.selected.length !== 0">
+                        <li v-for="(val, key) in formData.selected" :key="val">
+                            <p style="float: left; margin: 10px 0">{{val}}</p>
+                            <button style="margin: 10px" class="btn btn-xs btn-danger" @click='deleteVal(key, val);'>Delete</button> 
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="wrap-input100 img-input validate-input" v-if="formData.accountType === 'Teacher'">
+					<span class="label-input100">Місце проведення занятть:</span>
+					<label for="stud"> 
+                        <input type="checkbox" id="stud" value="В учня" v-model="formData.checkedPlace"> В учня 
+                    </label>
+                    <label for="teach">
+                        <input type="checkbox" id="teach" value="В репетитора" v-model="formData.checkedPlace"> В репетитора
+                    </label>
+				</div>
+
+				<div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
+					<span class="label-input100">Коротко про себе:</span>
+					<textarea class="input100" name="message" placeholder="Кілька речень про себе"></textarea>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="container-contact100-form-btn">
+					<button class="contact100-form-btn" @click="signUp">Зареєструватись</button>
+				</div>
+			</div>
+		</div>
+	</div>
     </div>
+
+       
+    
 </template>
 
 <script>
@@ -68,8 +107,8 @@ export default {
                 password:'',
                 accountType: 'Student',
                 image: null,
-                price: 0,
-                experience: 0,
+                price: '',
+                experience: '',
                 checkedPlace: [],
                 selected: [],
                 description: null
@@ -146,6 +185,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.img-input{
+    padding-top: 10px;
+    border: 0;
+    font-family: Poppins-Regular;
+    font-size: 15px;
+    color: #808080;
+}
+
+.img-input label{
+        padding-right: 15px;
+}
     ul {
         list-style-type: none;
         padding: 0;
