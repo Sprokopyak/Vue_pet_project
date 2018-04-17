@@ -1,5 +1,4 @@
 <template>
-
  <div class="bg-container-contact100">
 	<div class="container-contact100">
 		<div class="wrap-contact100">
@@ -11,25 +10,21 @@
 				<div class="wrap-input100 validate-input">
 					<span class="label-input100">Ім'я:</span>
 					<input class="input100" type="text" name="name" v-model="formData.name" placeholder="Введіть ваше ім'я">
-					<span class="focus-input100"></span>
 				</div>
 
 				<div class="wrap-input100 validate-input">
 					<span class="label-input100">Емейл:</span>
 					<input class="input100" type="text" name="email" v-model="formData.email"  placeholder="Введіть ваш емейл">
-					<span class="focus-input100"></span>
 				</div>
 
 				<div class="wrap-input100 validate-input">
 					<span class="label-input100">Пароль:</span>
 					<input class="input100" type="password" name="password" v-model="formData.password" placeholder="Введіть ваш пароль">
-					<span class="focus-input100"></span>
 				</div>
 
                 <div class="img-input validate-input">
 					<span class="label-input100">Зображення:</span>
 					<input class="input100" type="file" ref="fileInput" accept="image/*" @change="onFilePicked" name="img"  >
-					<span class="focus-input100"></span>
 				</div>
 
                 <div class="wrap-input100 img-input validate-input">
@@ -45,13 +40,11 @@
                 <div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Вартість заняття:</span>
 					<input class="input100" type="text" name="price" v-model.number="formData.price" placeholder="Введіть вартість заняття грн/год">
-					<span class="focus-input100"></span>
 				</div>
 
                 <div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Досвід роботи:</span>
 					<input class="input100" type="text" name="experience" v-model.number="formData.experience" placeholder="Введіть ваш досвід роботи (роки)">
-					<span class="focus-input100"></span>
 				</div>
                
                 <div class="wrap-input100 img-input validate-input" v-if="formData.accountType === 'Teacher'">
@@ -68,7 +61,7 @@
                 </div>
 
                 <div class="wrap-input100 img-input validate-input" v-if="formData.accountType === 'Teacher'">
-					<span class="label-input100">Місце проведення занятть:</span>
+					<span class="label-input100">Місце проведення заняття:</span>
 					<label for="stud"> 
                         <input type="checkbox" id="stud" value="В учня" v-model="formData.checkedPlace"> В учня 
                     </label>
@@ -79,8 +72,7 @@
 
 				<div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Коротко про себе:</span>
-					<textarea class="input100" name="message" placeholder="Кілька речень про себе"></textarea>
-					<span class="focus-input100"></span>
+					<textarea class="input100" name="message" placeholder="Декілька речень про себе"></textarea>
 				</div>
 
 				<div class="container-contact100-form-btn">

@@ -1,35 +1,42 @@
 <template>
 <div >
-<div class="banner">
-    <h1>Репетитор у Львові</h1>
-    <p>Обирайте кращих викладачів на нашому сайті</p>
-</div>
+    <div class="banner">
+        <h1>Репетитор у Львові</h1>
+        <p>Обирайте кращих викладачів на нашому сайті</p>
+    </div>
            
-<div class="" style="background-color:#F3F3F3">
-    <div class="container " >
+  
+        <div class="wrap-input100 filter">
+            <span class="label-input100 filter-label"> Ціна від:</span>
+            <input id="fromP" type="text" v-model.number="priceValueFrom" v-on:keyup="orderBy(priceValueFrom, 'price')" class="input100">
+        </div>
+
+        <div class="wrap-input100 filter">
+            <span class="label-input100 filter-label"> Ціна до:</span>
+            <input id="toP"  type="text" v-model.number="priceValueTo" v-on:keyup="orderBy(priceValueTo, 'price')" class="input100">
+        </div>
+
+        <div class="wrap-input100 filter">
+            <span class="label-input100 filter-label"> Досвід від: </span>
+            <input id="fromE" type="text" v-model.number="experienceValueFrom" v-on:keyup="orderBy(experienceValueFrom, 'experience')" class="input100">
+        </div>
+
+        <div class="wrap-input100 filter">
+            <span class="label-input100 filter-label"> Досвід до: </span>
+            <input id="toE" type="text" v-model.number="experienceValueTo" v-on:keyup="orderBy(experienceValueTo, 'experience')" class="input100">
+        </div>
+
+        <div class="wrap-input100 filter dropdown">
+            <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="orderBy(selectedDropdown, 'level')">
+                <option  v-for="item in dropDown" :key="item">{{item}}</option>
+            </select>
+        </div>
+
+          <div style="background-color:#F3F3F3; padding-top:20px">
+    <div class="container ">
         <div class="row">
 
-        <label for="fromP"> Ціна від:
-            <input id="fromP" type="text" v-model.number="priceValueFrom" v-on:keyup="orderBy(priceValueFrom, 'price')" class="form-control">
-        </label>
-        <label for="toP"> Ціна до:
-            <input id="toP"  type="text" v-model.number="priceValueTo" v-on:keyup="orderBy(priceValueTo, 'price')" class="form-control">
-        </label>
-
-        <label for="fromE"> Досвід від:
-            <input id="fromE" type="text" v-model.number="experienceValueFrom" v-on:keyup="orderBy(experienceValueFrom, 'experience')" class="form-control">
-        </label>
-        <label for="toE"> Досві до:
-            <input id="toE" type="text" v-model.number="experienceValueTo" v-on:keyup="orderBy(experienceValueTo, 'experience')" class="form-control">
-        </label>
-        <label for="priority">Рівні підготовки:
-        <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="orderBy(selectedDropdown, 'level')">
-            <option v-for="item in dropDown" :key="item">{{item}}</option>
-        </select>
-    </label>
-
             <div class="col-sm-12" v-for="(user,key) in fireData" :key=key> 
-
                 <div class="brdr bgc-fff pad-10 box-shad btm-mrg-20 property-listing" v-if="user.accountType === 'Teacher' ">
                     <div class="media">
                         <div class="img-block pull-left">
@@ -38,6 +45,7 @@
                         </div>
 
                         <div class="media-body fnt-smaller clearfix ">
+                            
                             <h4> {{user.name}} 
                                 <small class="pull-right"> 
                                 <span class="glyphicon glyphicon-map-marker"></span> м. Львів | <span class="glyphicon glyphicon-usd"></span>
@@ -48,26 +56,24 @@
                             
                             <p v-if="user.experience < 2"> <span class="bold">Досві роботи: </span> {{user.experience}} рік</p>
                             <p v-if="user.experience > 1"> <span class="bold">Досві роботи: </span> {{user.experience}} роки</p>
-<router-link :to="/user/+ user.uid">
+
                             <ul style=" padding: 0" >
                                 <p class="pull-left bold">Рівні підготовки: </p>
                                 <li style="display: inline-block; margin-left: 5px" v-for="u in user.selected" :key=u> {{u}}, </li>
                             </ul>
-</router-link>
+
                             <ul style=" padding: 0" >
                                 <p style="display: inline-block" class="pull-left bold">Можливість проведення занятть: </p>
                                 <li style="display: inline-block; margin-left: 5px" v-for="place in user.checkedPlace" :key=place> {{place}}, </li>
                             </ul>
                             <p><span class="bold"> Про репетитора: </span> {{user.description}} </p>
                            
-
-                           
                             <button class="btn btn-xs btn-primary" :disabled="editFormMode.includes(key) ? true : false" @click='editFormMode.push(key)'>Зв'язатись з репетитором</button> 
-                        
+                            <router-link :to="/user/+ user.uid">
+                                <button class="btn btn-xs btn-success ">Детальніше</button> 
+                             </router-link>
                           
-                            
-
-
+        
                             <div class="modal-dialog " id="modal" v-if='editFormMode.includes(key)'>
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -103,8 +109,8 @@
                 </div><!-- End Listing-->
             </div>
             <h1 v-if="fireData === null || fireData === '' || fireData.length === 0">За ваши запитом не знайдено жодного викладача</h1>
-        </div><!-- End row -->
-    </div><!-- End container -->
+        </div>
+    </div>
 </div>
 </div>    
 </template>
@@ -113,11 +119,8 @@
 export default {
     data () {
         return {
-            movies:[],
             fireData:null,
-            editingUser:[],
             editFormMode:[],
-            book: true,
             modalShow: false,
             studentContact: {
                 name: null,
@@ -131,13 +134,9 @@ export default {
             experienceValueTo: 0,
             dropDown: ['Репетитор для початківців', 'Рівень А1-А2 (Beginner, Elementary)', 'Рівень B1-B2 (Intermediate)', 'Рівень C1-C2 (Advanced, Proficiency)', 'Розмовна англійська', 'Ділова та бізнес мова', 'Університетські курси', 'Підготовка до вступу за кордон', 'До співбесіди в посольстві', 'TOEFL', 'IELTS'],
             selectedDropdown: '',
-
-
-            show   : false, // display content after API request
-            offset : 1,     // items to display after scroll
-            display: 7,     // initial items
-            trigger: 100,   // how far from the bottom to trigger infinite scroll
-            end    : false,
+            offset : 1,     
+            display: 7,     
+            trigger: 100,   
         }
     },
      mounted() {
@@ -154,8 +153,6 @@ export default {
                 if (window.innerHeight + window.scrollY >= (document.body.offsetHeight - this.trigger)) {
                     if (this.display < arr.length) {
                             this.display += this.offset;
-                    } else {
-                        this.end = true;
                     }
                 }
                 firebase.database().ref('users').limitToFirst(this.display).on('value',(snapshot)=>{
@@ -206,21 +203,6 @@ export default {
         },
         closeModal(){
             this.modalShow = false
-        },
-
-        editUser(key){
-            console.log(key) 
-            firebase.database().ref('users/'+ key).update({ 
-                name: this.editingUser[key]
-            })
-            .then((data)=>{
-                this.editingUser[key]=null;
-                this.editFormMode=[];
-            })
-        },
-
-        deleteMovie(key){
-            firebase.database().ref('movies/' + key).remove();
         },
 
         fetchFirebaseUserData(){
@@ -378,6 +360,25 @@ body {
     #property-listings .property-listing img {
         max-width: 180px;
     }
+}
+
+.filter{
+    display: inline-block;
+    width: 90px;
+    margin-left: 130px;
+}
+
+.filter:first-child{
+    margin-left: 75px;
+}
+
+.dropdown{
+    margin-left: 50px;
+    width: 240px;
+}
+
+.filter-label{
+    left: -135px;
 }
 
 </style>

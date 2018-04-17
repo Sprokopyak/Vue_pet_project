@@ -235,34 +235,6 @@ input, textarea {
     border: none;
 }
 
-.focus-input100 {
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-}
-
-
-
-.focus-input100::before {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    -webkit-transition: all 0.6s;
-    -o-transition: all 0.6s;
-    -moz-transition: all 0.6s;
-    transition: all 0.6s;
-    background: #57b846;
-}
-
-
 .container-contact100-form-btn {
     width: 100%;
     display: -webkit-box;

@@ -8,16 +8,14 @@
 			</div>
 
             <div class="contact100-form validate-form">
-				<div class="wrap-input100 validate-input" data-validate="Name is required">
+				<div class="wrap-input100">
 					<span class="label-input100">Ваш емейл:</span>
-					<input class="input100" type="email" v-model="formData.email" placeholder="Ваш емейл">
-					<span class="focus-input100"></span>
+					<input class="input100 " type="email" v-model="formData.email" placeholder="Ваш емейл">
 				</div>
 
 				<div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
 					<span class="label-input100">Ваш пароль:</span>
 					<input class="input100" type="password" v-model="formData.password" placeholder="Ваш пароль">
-					<span class="focus-input100"></span>
 				</div>
 
 				<div class="container-contact100-form-btn">

@@ -17,7 +17,7 @@
         <div class=" col-md-12 " v-if="fireData !== null">
             <h2>Ім'я: {{fireData.name}}</h2> 
              <h3>Навики викладання:
-                  <button v-if="authUser && currentUserId === userId && !editFormMode.includes(fireData.uid)" class="btn btn-xs btn-success pull-right " @click='editFormMode.push(fireData.uid)'>Редагувати</button> 
+            <button v-if="authUser && currentUserId === userId && !editFormMode.includes(fireData.uid)" class="btn btn-xs btn-success pull-right " @click='editFormMode.push(fireData.uid)'>Редагувати</button> 
                  <select v-if='editFormMode.includes(fireData.uid)' id="priority" class="form-control" v-model="selectedDropdown" v-on:change="setMode(selectedDropdown)">
                         <option v-for="item in dropDown" :key="item">{{item}}</option>
                     </select>
@@ -44,24 +44,18 @@
                 <textarea style="margin: 20px 0 10px 0" v-if='editFormMode.includes(fireData.uid)' type="text" v-model='fireData.description' class="form-control "></textarea>
                 <button v-if='editFormMode.includes(fireData.uid)' class="btn btn-xs btn-success " @click='editDescription'>Зберегти</button> 
             </h3>
-           
-      
             <br>
             <br>
-           
-        
-        <div>
-            <h4> Студенти, які залишили свої контакті дані, щоб ви їм зателефонували: </h4> 
-            <div v-for="(val, key) in studentContact" :key="key" v-if="currentUserId === userId" class="border">
-            <button @click='deleteStudent(key)' aria-label="Close" type="button" class="close"><span aria-hidden="true">×</span></button>
-                <p><span class="bold"> Ім'я студента: </span>{{val.name}}</p>
-                <p><span class="bold">Номер телефону студента: </span>{{val.phone}}</p>
-                <p><span class="bold">Що студент хоче вивчити: </span>{{val.comment}}</p>
+            <div v-if="currentUserId === userId">
+                <h4> Студенти, які залишили свої контакті дані, щоб ви їм зателефонували: </h4>
+                <div v-for="(val, key) in studentContact" :key="key" class="border">  
+                <button @click='deleteStudent(key)' aria-label="Close" type="button" class="close"><span aria-hidden="true">×</span></button>
+                    <p><span class="bold"> Ім'я студента: </span>{{val.name}}</p>
+                    <p><span class="bold">Номер телефону студента: </span>{{val.phone}}</p>
+                    <p><span class="bold">Що студент хоче вивчити: </span>{{val.comment}}</p>
+                </div> 
             </div>
         </div>
-        </div>
-        
-        
         </div>
     </div>
 </template>
@@ -190,7 +184,7 @@ export default {
 
     .wrapper{
         background-image: url(../assets/bg-03.jpg);
-        height: 40vh;
+        height: 400px;
         position: relative;
         z-index: 1;
         background-repeat: no-repeat; 
