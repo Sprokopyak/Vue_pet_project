@@ -50,6 +50,14 @@ export default {
                 alert(e.message)
             })
         }
+    },
+    beforeRouteEnter(to, from, next){
+        if(firebase.auth().currentUser){
+            next(false);
+            this.$router.push('/')
+        } else{
+             next();
+        }
     }
 }
 </script>

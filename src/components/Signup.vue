@@ -72,7 +72,7 @@
 
 				<div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Коротко про себе:</span>
-					<textarea class="input100" name="message" placeholder="Декілька речень про себе"></textarea>
+					<textarea class="input100" v-model="formData.description" name="message" placeholder="Декілька речень про себе"></textarea>
 				</div>
 
 				<div class="container-contact100-form-btn">
@@ -170,6 +170,14 @@ export default {
         onFilePicked(event){
             const files = event.target.files;
             this.formData.image = files[0]
+        }
+    },
+    beforeRouteEnter(to, from, next){
+        if(firebase.auth().currentUser){
+            next(false);
+          
+        } else{
+             next();
         }
     }
 }

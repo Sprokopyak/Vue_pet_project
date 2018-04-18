@@ -5,32 +5,34 @@
         <p>Обирайте кращих викладачів на нашому сайті</p>
     </div>
            
-  
+  <div class="contact100-form-title">
         <div class="wrap-input100 filter">
             <span class="label-input100 filter-label"> Ціна від:</span>
-            <input id="fromP" type="text" v-model.number="priceValueFrom" v-on:keyup="orderBy(priceValueFrom, 'price')" class="input100">
+            <input id="fromP" type="text" v-model.number="priceValueFrom" v-on:keyup="orderBy(priceValueFrom, 'price')" class="input100 input10">
         </div>
 
         <div class="wrap-input100 filter">
             <span class="label-input100 filter-label"> Ціна до:</span>
-            <input id="toP"  type="text" v-model.number="priceValueTo" v-on:keyup="orderBy(priceValueTo, 'price')" class="input100">
+            <input id="toP"  type="text" v-model.number="priceValueTo" v-on:keyup="orderBy(priceValueTo, 'price')" class="input100 input10">
         </div>
 
         <div class="wrap-input100 filter">
             <span class="label-input100 filter-label"> Досвід від: </span>
-            <input id="fromE" type="text" v-model.number="experienceValueFrom" v-on:keyup="orderBy(experienceValueFrom, 'experience')" class="input100">
+            <input id="fromE" type="text" v-model.number="experienceValueFrom" v-on:keyup="orderBy(experienceValueFrom, 'experience')" class="input100 input10">
         </div>
 
         <div class="wrap-input100 filter">
             <span class="label-input100 filter-label"> Досвід до: </span>
-            <input id="toE" type="text" v-model.number="experienceValueTo" v-on:keyup="orderBy(experienceValueTo, 'experience')" class="input100">
+            <input id="toE" type="text" v-model.number="experienceValueTo" v-on:keyup="orderBy(experienceValueTo, 'experience')" class="input100 input10">
         </div>
 
         <div class="wrap-input100 filter dropdown">
-            <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="orderBy(selectedDropdown, 'level')">
+            <select id="priority" class="form-control form-control2" v-model="selectedDropdown" v-on:change="orderBy(selectedDropdown, 'level')">
                 <option  v-for="item in dropDown" :key="item">{{item}}</option>
             </select>
         </div>
+  </div>
+
 
           <div style="background-color:#F3F3F3; padding-top:20px">
     <div class="container ">
@@ -40,7 +42,7 @@
                 <div class="brdr bgc-fff pad-10 box-shad btm-mrg-20 property-listing" v-if="user.accountType === 'Teacher' ">
                     <div class="media">
                         <div class="img-block pull-left">
-                            <img v-if="!user.avatar" alt="image" class="img img-responsive " src='http://images.prd.mris.com/image/V2/1/Yu59d899Ocpyr_RnF0-8qNJX1oYibjwp9TiLy-bZvU9vRJ2iC1zSQgFwW-fTCs6tVkKrj99s7FFm5Ygwl88xIA.jpg'>
+                            <img v-if="!user.avatar" alt="image" class="img img-responsive " src='../assets/man.jpg'>
                             <img v-if="user.avatar" alt="image" class="img img-responsive pull-left" :src='user.avatar'>
                         </div>
 
@@ -106,7 +108,7 @@
                             </div>
                         </div>
                     </div>
-                </div><!-- End Listing-->
+                </div>
             </div>
             <h1 v-if="fireData === null || fireData === '' || fireData.length === 0">За ваши запитом не знайдено жодного викладача</h1>
         </div>
@@ -133,55 +135,31 @@ export default {
             experienceValueFrom: 0,
             experienceValueTo: 0,
             dropDown: ['Репетитор для початківців', 'Рівень А1-А2 (Beginner, Elementary)', 'Рівень B1-B2 (Intermediate)', 'Рівень C1-C2 (Advanced, Proficiency)', 'Розмовна англійська', 'Ділова та бізнес мова', 'Університетські курси', 'Підготовка до вступу за кордон', 'До співбесіди в посольстві', 'TOEFL', 'IELTS'],
-            selectedDropdown: '',
-            offset : 1,     
-            display: 7,     
-            trigger: 100,   
+            selectedDropdown: '',    
         }
     },
-     mounted() {
-      // track scroll event
-      this.scroll();
-   },
-    methods:{
-        scroll() {
-            var arr = [];
-            window.onscroll = ev => {
-                for (let key in this.fireData){
-                        arr.push(key)
-                }
-                if (window.innerHeight + window.scrollY >= (document.body.offsetHeight - this.trigger)) {
-                    if (this.display < arr.length) {
-                            this.display += this.offset;
-                    }
-                }
-                firebase.database().ref('users').limitToFirst(this.display).on('value',(snapshot)=>{
-                    this.fireData = snapshot.val();
-                });
-            }
-         },
 
+    methods:{
         orderBy(value, s){
             if(s === 'price'){
                 this.experienceValueFrom = 0;
                  this.experienceValueTo = 0;
-                firebase.database().ref('users').orderByChild('price').startAt(this.priceValueFrom).endAt(this.priceValueTo).limitToFirst(this.display).on('value',(snapshot)=>{
+                firebase.database().ref('users').orderByChild('price').startAt(this.priceValueFrom).endAt(this.priceValueTo).on('value',(snapshot)=>{
                     this.fireData = snapshot.val();
                 });
             } else if( s === 'experience'){
                 this.priceValueFrom = 0;
                 this.priceValueTo = 0;
-                 firebase.database().ref('users').orderByChild('experience').startAt(this.experienceValueFrom).endAt(this.experienceValueTo).limitToFirst(this.display).on('value',(snapshot)=>{
+                 firebase.database().ref('users').orderByChild('experience').startAt(this.experienceValueFrom).endAt(this.experienceValueTo).on('value',(snapshot)=>{
                     this.fireData = snapshot.val();
-                     console.log(    snapshot.val() )
                 });
             } else if (s === 'level') {
                 var me = this;
                 var arr = [];
-                firebase.database().ref('users').once('value', (snapshot)=>{
+                firebase.database().ref('users/').once('value', (snapshot)=>{
                     snapshot.forEach(function(childSnapshot) {
                          let selectedArr = childSnapshot.val().selected
-                         selectedArr.map(val=> {
+                         selectedArr.map((val) => {
                             if( val === value) {
                                 arr.push(childSnapshot.val()); 
                             } 
@@ -220,7 +198,7 @@ export default {
                 });
             });
             this.authUser = firebase.auth().currentUser; 
-            db.limitToFirst(this.display).on('value',(snapshot, t)=>{
+            db.on('value',(snapshot, t)=>{
                 this.fireData = snapshot.val();
             });
         }
@@ -265,7 +243,7 @@ export default {
 }
 
 .media>.pull-left {
-    padding-right: 70px;
+    padding-right: 30px;
 }
 
 @keyframes alertAnim {
@@ -379,6 +357,20 @@ body {
 
 .filter-label{
     left: -135px;
+      color: #fff;
 }
+
+.input10{
+    color: #fff;
+}
+
+    .form-control2 {
+        color: #fff;
+        background-color: #938f8fb0;
+    }
+
+    .contact100-form-title::before {
+        background-color: rgba(24, 26, 27, 0.86);
+    }
 
 </style>

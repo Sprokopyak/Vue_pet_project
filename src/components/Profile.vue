@@ -7,6 +7,7 @@
         </div>
         <div class="wrapper2 ">
             <p class="img-frame">
+                 <img v-if="fireData !== null && !fireData.avatar" alt="image" class="img img-responsive " src='../assets/man.jpg'>
                   <img v-if="fireData !== null" class=" img-responsive" :src="fireData.avatar">
             </p>
         </div>
@@ -47,7 +48,7 @@
             <br>
             <br>
             <div v-if="currentUserId === userId">
-                <h4> Студенти, які залишили свої контакті дані, щоб ви їм зателефонували: </h4>
+                <h4 v-if="studentContact !== undefined"> Студенти, які залишили свої контакті дані, щоб ви їм зателефонували: </h4>
                 <div v-for="(val, key) in studentContact" :key="key" class="border">  
                 <button @click='deleteStudent(key)' aria-label="Close" type="button" class="close"><span aria-hidden="true">×</span></button>
                     <p><span class="bold"> Ім'я студента: </span>{{val.name}}</p>
@@ -121,7 +122,7 @@ export default {
             }
             firebase.database().ref('/users/' + this.userId).once('value').then(function(snapshot) {
                 me.fireData = snapshot.val();
-                me.studentContact=  me.fireData.studentContact
+                me.studentContact=  me.fireData.studentContact;
             });
             firebase.database().ref('users').on('value',(snapshot)=>{
                 this.users = snapshot.val();

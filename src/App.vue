@@ -3,7 +3,7 @@
     <nav class="navbar navbar-inverse">
         <div class="container">
             <div class="navbar-header ">
-                <router-link to="/" tag="a" class="navbar-brand">WebSiteName</router-link>
+                <router-link to="/" tag="a" class="navbar-brand">Головна</router-link>
             </div>
             <ul class="nav navbar-nav">
                 <li v-if="authUser">
