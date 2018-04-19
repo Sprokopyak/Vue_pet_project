@@ -103,31 +103,31 @@ export default {
  /* Sign up and sign in styles */
 .bg-container-contact100{
         background-image: url(assets/bg-01.jpg);
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            z-index: 1;
-            top: 0;
-            left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 1;
+        top: 0;
+        left: 0;
     }
 
     .contact100-form-title{
         background-image: url(assets/bg-03.jpg)
     }
 
-.contact100-form-title::before {
-    content: "";
-    display: block;
-    position: absolute;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: rgba(54,84,99,0.7);
-}
+    .contact100-form-title::before {
+        content: "";
+        display: block;
+        position: absolute;
+        z-index: -1;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(54,84,99,0.7);
+    }
 
 .container-contact100 {
     width: 100%;

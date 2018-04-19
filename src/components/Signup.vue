@@ -1,33 +1,33 @@
 <template>
- <div class="bg-container-contact100">
+<div class="bg-container-contact100">
 	<div class="container-contact100">
 		<div class="wrap-contact100">
 			<div class="contact100-form-title">
 				<span>Зареєструватись</span>
 			</div>
 
-            <div class="contact100-form validate-form">
-				<div class="wrap-input100 validate-input">
+            <form class="contact100-form" @submit="signUp">
+				<div class="wrap-input100">
 					<span class="label-input100">Ім'я:</span>
-					<input class="input100" type="text" name="name" v-model="formData.name" placeholder="Введіть ваше ім'я">
+					<input class="input100" type="text" required name="name" v-model="formData.name" placeholder="Введіть ваше ім'я">
 				</div>
 
-				<div class="wrap-input100 validate-input">
+				<div class="wrap-input100">
 					<span class="label-input100">Емейл:</span>
-					<input class="input100" type="text" name="email" v-model="formData.email"  placeholder="Введіть ваш емейл">
+					<input class="input100" type="email" name="email" required v-model="formData.email"  placeholder="Введіть ваш емейл">
 				</div>
 
-				<div class="wrap-input100 validate-input">
+				<div class="wrap-input100">
 					<span class="label-input100">Пароль:</span>
-					<input class="input100" type="password" name="password" v-model="formData.password" placeholder="Введіть ваш пароль">
+					<input class="input100" type="password" required name="password" v-model="formData.password" placeholder="Введіть ваш пароль">
 				</div>
 
-                <div class="img-input validate-input">
+                <div class="img-input">
 					<span class="label-input100">Зображення:</span>
-					<input class="input100" type="file" ref="fileInput" accept="image/*" @change="onFilePicked" name="img"  >
+					<input class="input100" type="file" ref="fileInput" required accept="image/*" @change="onFilePicked" name="img"  >
 				</div>
 
-                <div class="wrap-input100 img-input validate-input">
+                <div class="wrap-input100 img-input">
 					<span class="label-input100">Зареєструватись як:</span>
 					<label for="teacher"> 
                         <input type="radio" id="teacher" value="Teacher" v-model="formData.accountType"> Репетитор 
@@ -37,17 +37,17 @@
                     </label>
 				</div>
                 
-                <div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
+                <div class="wrap-input100" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Вартість заняття:</span>
 					<input class="input100" type="text" name="price" v-model.number="formData.price" placeholder="Введіть вартість заняття грн/год">
 				</div>
 
-                <div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
+                <div class="wrap-input100" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Досвід роботи:</span>
 					<input class="input100" type="text" name="experience" v-model.number="formData.experience" placeholder="Введіть ваш досвід роботи (роки)">
 				</div>
                
-                <div class="wrap-input100 img-input validate-input" v-if="formData.accountType === 'Teacher'">
+                <div class="wrap-input100 img-input" v-if="formData.accountType === 'Teacher'">
                     <span class="label-input100">Рівні підготовки студента:</span>
                     <select id="priority" class="form-control" v-model="selectedDropdown" v-on:change="setModel(selectedDropdown)">
                         <option v-for="item in dropDown" :key="item">{{item}}</option>
@@ -60,7 +60,7 @@
                     </ul>
                 </div>
 
-                <div class="wrap-input100 img-input validate-input" v-if="formData.accountType === 'Teacher'">
+                <div class="wrap-input100 img-input" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Місце проведення заняття:</span>
 					<label for="stud"> 
                         <input type="checkbox" id="stud" value="В учня" v-model="formData.checkedPlace"> В учня 
@@ -70,21 +70,18 @@
                     </label>
 				</div>
 
-				<div class="wrap-input100 validate-input" v-if="formData.accountType === 'Teacher'">
+				<div class="wrap-input100" v-if="formData.accountType === 'Teacher'">
 					<span class="label-input100">Коротко про себе:</span>
 					<textarea class="input100" v-model="formData.description" name="message" placeholder="Декілька речень про себе"></textarea>
 				</div>
 
 				<div class="container-contact100-form-btn">
-					<button class="contact100-form-btn" @click="signUp">Зареєструватись</button>
+                    <input type="submit" class="contact100-form-btn" value="Зареєструватись">
 				</div>
-			</div>
+			</form>
 		</div>
 	</div>
-    </div>
-
-       
-    
+</div>
 </template>
 
 <script>
@@ -123,7 +120,8 @@ export default {
             this.formData.selected.splice(key,1);
         },
 
-        signUp(){
+        signUp(e){
+             e.preventDefault();
             var me = this;
             firebase.auth().createUserWithEmailAndPassword(this.formData.email,this.formData.password)
             .then((user)=> {
@@ -172,6 +170,7 @@ export default {
             this.formData.image = files[0]
         }
     },
+
     beforeRouteEnter(to, from, next){
         if(firebase.auth().currentUser){
             next(false);
@@ -183,25 +182,16 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.img-input{
-    padding-top: 10px;
-    border: 0;
-    font-family: Poppins-Regular;
-    font-size: 15px;
-    color: #808080;
-}
+    .img-input{
+        padding-top: 10px;
+        border: 0;
+        font-family: Poppins-Regular;
+        font-size: 15px;
+        color: #808080;
+    }
 
-.img-input label{
+    .img-input label{
         padding-right: 15px;
-}
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        margin: 0 10px;
-    }
+    }    
 </style>

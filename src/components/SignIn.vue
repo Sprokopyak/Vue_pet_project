@@ -1,31 +1,29 @@
 <template>
- 
-    <div class="bg-container-contact100">
+<div class="bg-container-contact100">
 	<div class="container-contact100">
 		<div class="wrap-contact100">
 			<div class="contact100-form-title">
 				<span>Увійти</span>
 			</div>
 
-            <div class="contact100-form validate-form">
+            <form class="contact100-form" @submit="signIn">
 				<div class="wrap-input100">
 					<span class="label-input100">Ваш емейл:</span>
-					<input class="input100 " type="email" v-model="formData.email" placeholder="Ваш емейл">
+					<input class="input100 " type="email" required v-model="formData.email" placeholder="Ваш емейл">
 				</div>
 
-				<div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+				<div class="wrap-input100">
 					<span class="label-input100">Ваш пароль:</span>
-					<input class="input100" type="password" v-model="formData.password" placeholder="Ваш пароль">
+					<input class="input100" type="password" required v-model="formData.password" placeholder="Ваш пароль">
 				</div>
 
 				<div class="container-contact100-form-btn">
-					<button class="contact100-form-btn" @click="signIn">Увійти</button>
+					<input type="submit" class="contact100-form-btn" value="Увійти">
 				</div>
-			</div>
+			</form>
 		</div>
 	</div>
-    </div>
-
+</div>
 </template>
 
 <script>
@@ -33,24 +31,25 @@ export default {
     data () {
         return {
             formData:{
-                email:'',
-                password:''
+                errors:[],
+                email: null,
+                password: null
             }
         }
     },
     methods: {
-        signIn(){
+        signIn(e){   
+            e.preventDefault();
             firebase.auth().signInWithEmailAndPassword(this.formData.email,this.formData.password)
             .then((user)=>{
-                console.log(user.email)
                 this.$router.replace('/hello')
-
             })
             .catch((e)=>{
                 alert(e.message)
             })
         }
     },
+    
     beforeRouteEnter(to, from, next){
         if(firebase.auth().currentUser){
             next(false);
@@ -61,18 +60,3 @@ export default {
     }
 }
 </script>
-
-<style>
-    
-
-
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        margin: 0 10px;
-    }
-</style>

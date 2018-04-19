@@ -31,13 +31,12 @@
                 <option  v-for="item in dropDown" :key="item">{{item}}</option>
             </select>
         </div>
-  </div>
+    </div>
 
 
-          <div style="background-color:#F3F3F3; padding-top:20px">
+    <div style="background-color:#F3F3F3; padding-top:20px">
     <div class="container ">
         <div class="row">
-
             <div class="col-sm-12" v-for="(user,key) in fireData" :key=key> 
                 <div class="brdr bgc-fff pad-10 box-shad btm-mrg-20 property-listing" v-if="user.accountType === 'Teacher' ">
                     <div class="media">
@@ -69,12 +68,12 @@
                                 <li style="display: inline-block; margin-left: 5px" v-for="place in user.checkedPlace" :key=place> {{place}}, </li>
                             </ul>
                             <p><span class="bold"> Про репетитора: </span> {{user.description}} </p>
-                           
+                            
                             <button class="btn btn-xs btn-primary" :disabled="editFormMode.includes(key) ? true : false" @click='editFormMode.push(key)'>Зв'язатись з репетитором</button> 
                             <router-link :to="/user/+ user.uid">
                                 <button class="btn btn-xs btn-success ">Детальніше</button> 
-                             </router-link>
-                          
+                                </router-link>
+                            
         
                             <div class="modal-dialog " id="modal" v-if='editFormMode.includes(key)'>
                                 <div class="modal-content">
